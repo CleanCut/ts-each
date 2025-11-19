@@ -1,3 +1,4 @@
+use owo_colors::OwoColorize;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::env;
@@ -66,19 +67,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let command_args = &args[2..];
 
     for host_name in host_names {
-        println!("--- {} ---", host_name);
+        println!("{}", format!("--- {} ---", host_name).blue());
+        println!("{}", command_args.join(" "));
         let output = Command::new("ssh")
+            .arg("-tt")
             .arg(&host_name)
             .args(command_args)
             .output()?;
 
         let have_stderr = output.stderr.len() > 0;
         if have_stderr {
-            println!("stdout:");
+            println!("{}", "stdout:".green());
         }
         print!("{}", String::from_utf8_lossy(&output.stdout));
         if have_stderr {
-            eprint!("\nstderr:\n{}", String::from_utf8_lossy(&output.stderr));
+            eprintln!("\n{}", "stderr:".red());
+            eprint!("{}", String::from_utf8_lossy(&output.stderr));
         }
     }
 
