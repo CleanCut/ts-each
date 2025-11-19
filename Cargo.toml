@@ -2,6 +2,14 @@
 name = "ts-each"
 version = "0.1.0"
 edition = "2024"
+description = "List tailscale peers (hosts), run commands on each of them, etc."
+homepage = "https://github.com/CleanCut/ts-each"
+repository = "https://github.com/CleanCut/ts-each"
+readme = "README.md"
+keywords = ["tailscale", "each", "ssh", "automation", "cli", "loop", "shell"]
+categories = ["command-line-utilities"]
+license = "MIT OR Apache-2.0"
+exclude = [".gitignore", "release.toml"]
 
 [dependencies]
 owo-colors = "4.0"

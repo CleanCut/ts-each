@@ -45,4 +45,14 @@ ts-each <host-prefix> <command> [args...]
 ts-each web- uptime
 ```
 
+## Contribution
+
+All software contributions are assumed to be dual-licensed under MIT/Apache-2.
+
+## Software License
+
+Distributed under the terms of both the MIT license and the Apache License (Version 2.0).
+
+See [`license/APACHE`](license/APACHE) and [`license/MIT`](license/MIT).
+
 [Tailscale]: https://tailscale.com/
