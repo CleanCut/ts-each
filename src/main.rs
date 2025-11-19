@@ -68,7 +68,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for host_name in host_names {
         println!("{}", format!("--- {} ---", host_name).blue());
-        println!("{}", command_args.join(" "));
         let output = Command::new("ssh")
             .arg("-tt")
             .arg(&host_name)
