@@ -1,8 +1,10 @@
 # `ts-each`
 
-A simple utility that runs a command on multiple remote hosts via [tailscale](https://tailscale.com/)/[SSH](https://www.openssh.org/), displaying the output.
+A simple utility that runs a command on multiple remote hosts via [tailscale]/[SSH](https://www.openssh.org/), displaying the output.
 
 ## Installation
+
+You should already have [Tailscale] installed and working.
 
 You can install the latest release of `ts-each` using Cargo:
 
@@ -42,3 +44,5 @@ ts-each <host-prefix> <command> [args...]
 # For example, to run `uptime` on all hosts starting with "web-", do
 ts-each web- uptime
 ```
+
+[Tailscale]: https://tailscale.com/
