@@ -72,8 +72,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .args(command_args)
             .output()?;
 
+        let have_stderr = output.stderr.len() > 0;
+        if have_stderr {
+            println!("stdout:");
+        }
         print!("{}", String::from_utf8_lossy(&output.stdout));
-        //eprint!("{}", String::from_utf8_lossy(&output.stderr));
+        if have_stderr {
+            eprint!("\nstderr:\n{}", String::from_utf8_lossy(&output.stderr));
+        }
     }
 
     Ok(())
