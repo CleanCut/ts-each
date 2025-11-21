@@ -1,0 +1,64 @@
+name: CI
+
+on:
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+
+env:
+    CARGO_TERM_COLOR: always
+
+jobs:
+    test:
+        name: Test on ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
+        continue-on-error: true # Let the other jobs complete even if one job in the matrix fails
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest, windows-latest]
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up Rust
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Install Tailscale (Unix)
+              if: runner.os != 'Windows'
+              run: |
+                  if [ "$RUNNER_OS" == "Linux" ]; then
+                    curl -fsSL https://tailscale.com/install.sh | sh
+                  elif [ "$RUNNER_OS" == "macOS" ]; then
+                    brew install tailscale
+                  fi
+
+            - name: Install Tailscale (Windows)
+              if: runner.os == 'Windows'
+              run: |
+                  choco install tailscale -y
+                  echo "C:\Program Files\Tailscale" >> $GITHUB_PATH
+              shell: bash
+
+            - name: Start Tailscaled (Unix)
+              if: runner.os != 'Windows'
+              run: |
+                  # Start tailscaled in userspace mode with in-memory state
+                  sudo tailscaled --cleanup
+                  sudo tailscaled --state=mem: --tun=userspace-networking &
+
+                  # Wait for the socket to be created
+                  timeout=30
+                  while [ ! -S /var/run/tailscale/tailscaled.sock ] && [ $timeout -gt 0 ]; do
+                    sleep 1
+                    timeout=$((timeout - 1))
+                  done
+
+            - name: Build
+              run: cargo build
+
+            - name: Run ts-each (no args)
+              run: cargo run
+
+            - name: Run ts-each (pattern, no output expected)
+              run: cargo run -- nonexistent-prefix-

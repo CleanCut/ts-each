@@ -1,6 +1,6 @@
 # `ts-each`
 
-A simple utility that runs a command on multiple remote hosts via [tailscale]/[SSH](https://www.openssh.org/), displaying the output.
+A simple utility that runs a command on multiple remote hosts via [tailscale]/[SSH](https://www.openssh.org/), displaying the output. Supports macOS, Linux, Windows, and any Unix-like OS that has a `tailscale` command-line client in the path.
 
 ## Installation
 
