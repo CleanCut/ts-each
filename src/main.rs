@@ -10,8 +10,8 @@ use std::process::Command;
 #[derive(Deserialize)]
 struct Status {
     /// Tailscale calls its list of connected devices "peers", under a "Peer" json key.
-    #[serde(rename = "Peer", default)]
-    peers: HashMap<String, Peer>,
+    #[serde(rename = "Peer")]
+    peers: Option<HashMap<String, Peer>>,
 }
 
 /// What we care about from each tailscale peer (host) in the JSON output.
@@ -73,6 +73,7 @@ fn main() -> Result<()> {
 
     let mut host_names: Vec<String> = status
         .peers
+        .unwrap_or_default()
         .values()
         .filter(|p| p.online.unwrap_or(false))
         .filter(|p| p.host_name.starts_with(prefix))
