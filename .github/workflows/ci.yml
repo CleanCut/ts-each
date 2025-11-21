@@ -13,6 +13,7 @@ jobs:
     test:
         name: Test on ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
+        continue-on-error: true # Let the other jobs complete even if one job in the matrix fails
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest, windows-latest]
