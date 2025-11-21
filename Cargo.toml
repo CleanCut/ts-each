@@ -1,6 +1,6 @@
 [package]
 name = "ts-each"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 description = "List tailscale peers (hosts), run commands on each of them, etc."
 homepage = "https://github.com/CleanCut/ts-each"
