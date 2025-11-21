@@ -1,14 +1,16 @@
+use anyhow::Result;
 use owo_colors::OwoColorize;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::env;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 /// What we care about from the JSON output of `tailscale status --json`.
 #[derive(Deserialize)]
 struct Status {
     /// Tailscale calls its list of connected devices "peers", under a "Peer" json key.
-    #[serde(rename = "Peer")]
+    #[serde(rename = "Peer", default)]
     peers: HashMap<String, Peer>,
 }
 
@@ -21,7 +23,30 @@ struct Peer {
     online: Option<bool>,
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn tailscale_executable() -> Result<PathBuf> {
+    let mut executable = PathBuf::from("tailscale");
+    if tailscale_works(&executable) {
+        return Ok(executable);
+    }
+    if cfg!(target_os = "macos") {
+        executable = PathBuf::from("/Applications/Tailscale.app/Contents/MacOS/Tailscale");
+        if tailscale_works(&executable) {
+            return Ok(executable);
+        }
+    }
+    Err(anyhow::anyhow!("Tailscale executable not found"))
+}
+
+fn tailscale_works(path: &Path) -> bool {
+    let mut command = Command::new(path);
+    command.arg("--version");
+    let Ok(output) = command.output() else {
+        return false;
+    };
+    output.status.success()
+}
+
+fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     // Running without any arguments lists all online hosts.
     let mut prefix = "";
@@ -30,7 +55,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         prefix = &args[1];
     }
 
-    let output = Command::new("/Applications/Tailscale.app/Contents/MacOS/Tailscale")
+    let executable = tailscale_executable()?;
+    let output = Command::new(&executable)
         .arg("status")
         .arg("--json")
         .output()?;
