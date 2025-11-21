@@ -36,7 +36,7 @@ jobs:
       - name: Install Tailscale (Windows)
         if: runner.os == 'Windows'
         run: |
-          choco install tailscale -y --limit-output
+          choco install tailscale -y --no-progress
           echo "C:\Program Files\Tailscale" >> $GITHUB_PATH
         shell: bash
 
