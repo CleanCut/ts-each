@@ -77,7 +77,7 @@ jobs:
         shell: bash
         run: |
           export EXPECTED="app-prod-1"
-          export RECEIVED="$(target/debug/ts-each app-prod)"
+          export RECEIVED="$(cargo run --quiet -- app-prod)"
           if [[ "$RECEIVED" != *"$EXPECTED"* ]]; then
             echo "Expected output:"
             echo -e "---\n$EXPECTED\n---"
