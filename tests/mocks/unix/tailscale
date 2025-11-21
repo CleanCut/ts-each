@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Intercept and return a fake status for CI, but allow any other commands through to the real
+# tailscale binary.
+
+if [ "$1" = "status" ] && [ "$2" = "--json" ]; then
+  echo '{
+    "Peer": {
+      "1": { "HostName": "app-prod-1", "Online": true },
+      "2": { "HostName": "app-prod-2", "Online": true },
+      "3": { "HostName": "app-staging-1", "Online": true }
+    }
+  }'
+else
+  if [ -x "/opt/homebrew/bin/tailscale" ]; then
+    exec /opt/homebrew/bin/tailscale "$@"
+  elif [ -x "/usr/local/bin/tailscale" ]; then
+    exec /usr/local/bin/tailscale "$@"
+  elif [ -x "/usr/bin/tailscale" ]; then
+    exec /usr/bin/tailscale "$@"
+  else
+    echo "Real tailscale not found" >&2
+    exit 1
+  fi
+fi
