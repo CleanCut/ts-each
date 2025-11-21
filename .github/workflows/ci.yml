@@ -74,6 +74,7 @@ jobs:
         run: cargo run
 
       - name: Test that ts-each can properly filter output
+        shell: bash
         run: |
           export EXPECTED="app-prod-1"
           export RECEIVED="$(target/debug/ts-each app-prod)"
