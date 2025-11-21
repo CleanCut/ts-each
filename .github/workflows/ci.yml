@@ -58,9 +58,11 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$HOME/.local/bin"
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
           if [ "$RUNNER_OS" == "Windows" ]; then
+            # Add Windows path to GITHUB_PATH so it takes precedence over things in PATH
+            cygpath -w "$HOME/.local/bin" >> $GITHUB_PATH
+            
             rustc tests/mocks/windows/tailscale.rs -o "$HOME/.local/bin/tailscale.exe"
             rustc tests/mocks/windows/ssh.rs -o "$HOME/.local/bin/ssh.exe"
           else
